@@ -9,6 +9,7 @@ import { User } from '../models/user.model';
   providedIn: 'root'
 })
 export class UserServiceService {
+  [x: string]: any;
   // private usersSubject = new BehaviorSubject<any[]>([]);
   // users$ = this.usersSubject.asObservable();
   private _users = new BehaviorSubject<User[]>([]);
@@ -18,12 +19,6 @@ export class UserServiceService {
   get users() {
     return this._users.asObservable();
   }
-
-  httpOptions = {
-    headers: new HttpHeaders({
-      'Content-Type': 'application/json',
-    }),
-  };
 
   constructor(private http: HttpClient) {
     // this.getUsers().subscribe(users => {
@@ -40,20 +35,29 @@ export class UserServiceService {
   //         return users.map(user => ({
   //           id: user.id,
   //           username: user.username
-  //         }));
-  //       })
-  //     );
-  // }
+  //        }));
+  //      })
+  //      );
+  //  }
 
   fetchUser(){
     return this.http
-    .get<{[key: number]:User}>(`${environment.baseUrl}/users`)
+    .get<{[key: number]:User}>(`${environment.baseUrl}/users/list`)
     .pipe(
       map(respData=>{
-        const users = [];
+        const users: any[] = [];
         for(const key in respData){
           if(respData.hasOwnProperty(key)){
-            users.push(new User(respData[key].id,respData[key].username))
+            users.push(
+              new User(
+                respData[key].id,
+                respData[key].username,
+                respData[key].email,
+                respData[key].password,
+                respData[key].height,
+                respData[key].weight,
+                respData[key].imagePath,
+                ))
           }
         }
         return users;
@@ -68,23 +72,55 @@ export class UserServiceService {
     return this.http.get(`${environment.baseUrl}/users/${userId}`);
   }
 
-  updateUser(user: User){
-    return this.http.put(`${environment.baseUrl}/users`,user,this.httpOptions)
+
+  updateUser(newuser: any,selectedUser: any,file: File) {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('id', selectedUser.id);
+    
+    formData.append('username', newuser.username ? newuser.username : selectedUser.username);
+  
+    formData.append('email', newuser.email ? newuser.email : selectedUser.email);
+  
+    formData.append('password', newuser.password ? newuser.password : selectedUser.password);
+  
+    formData.append('height', newuser.height ? newuser.height.toString() : selectedUser.height.toString());
+  
+    formData.append('weight', newuser.weight ? newuser.weight.toString() : selectedUser.weight.toString());
+
+    formData.append('imagePath', selectedUser.imagePath);
+
+  
+
+  return this.http.put(`${environment.baseUrl}/users`,formData)
+  .pipe(
+    tap(() => {
+      this.fetchUser().subscribe();
+    })
+  );
+}
+  
+  createUser(newuser: any,file: File) {
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('id', newuser.id);
+      formData.append('username', newuser.username);
+      formData.append('email', newuser.email);
+      formData.append('password', newuser.password);
+      formData.append('height', newuser.height.toString());
+      formData.append('weight', newuser.weight.toString());
+  
+    return this.http
+    .post(`${environment.baseUrl}/users/regist`, formData)
     .pipe(
       tap(() => {
         this.fetchUser().subscribe();
       })
     );
   }
-  
-  createUser(newUser: any) {
-    return this.http
-    .post(`${environment.baseUrl}/users`, newUser,this.httpOptions)
-    .pipe(
-      tap(() => {
-        this.fetchUser().subscribe();
-      })
-    );
+
+  profilePic(userID: number): Observable<Blob> {
+    return this.http.get(`${environment.baseUrl}/users/${userID}/profilepic`, { responseType: 'blob' });
   }
 
   deleteUser(userID: number){

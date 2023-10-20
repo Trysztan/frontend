@@ -1,0 +1,113 @@
+<ion-header [translucent]="true">
+  <ion-toolbar *ngIf="selectedUser">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/users/list"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{selectedUser.username}}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button color="primary" *ngIf="!isUpdate" (click)="updateSession()"><ion-icon name="pencil-outline">Update</ion-icon></ion-button>
+      <ion-button color="warning" *ngIf="!isUpdate" (click)="deleteUser(selectedUser.id)"><ion-icon name="trash-outline">Delete</ion-icon></ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-text-center">
+  <div *ngIf="!selectedUser">
+    <ion-spinner color="primary">Loading</ion-spinner>
+  </div>
+  <ion-card *ngIf="selectedUser && !isUpdate" class="ion-text-center">
+    <ion-card-header class="ion-align-items-center">
+      <ion-avatar>
+        <ion-img [src]="profilePic"></ion-img>
+      </ion-avatar>
+      <ion-card-title>{{ selectedUser.username }}</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <p>Email: {{ selectedUser.email }}</p>
+      <p>Súly: {{ selectedUser.weight }} kg</p>
+      <p>Magasság: {{ selectedUser.height }} cm</p>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card *ngIf="selectedUser && isUpdate" class="ion-text-center">
+    <ion-card-header class="ion-align-items-center">
+      <ion-avatar>
+        <ion-img [src]="profilePic"></ion-img>
+      </ion-avatar>
+      <ion-button color="primary" (click)="updateImage()"><ion-icon name="pencil-outline"></ion-icon></ion-button>
+      <ion-card-title>{{ selectedUser.username }}</ion-card-title>
+    </ion-card-header>
+    <ion-card-content class="ion-align-items-center">
+      <form [formGroup]="form" (ngSubmit)="onUpdateUser()">
+        <ion-grid>
+          <ion-row>
+            <ion-col size-sm="6" offset-sm="3">
+              <ion-list>
+                <ion-row>
+                  <ion-col>
+                    <app-image-picker
+                     *ngIf="isUpdateImage"
+                      [showPreview]="form.get('image')?.value"
+                      (imagePick)="onImagePicked($event)"
+                    ></app-image-picker>
+                  </ion-col>
+                </ion-row>
+                <ion-item>
+                  <ion-label position="floating">Username</ion-label>
+                  <ion-input
+                    type="text"
+                    formControlName="username"
+                    required
+                    minlength="3"
+                  ></ion-input>
+                </ion-item>
+                <ion-item>
+                  <ion-label position="floating">Email</ion-label>
+                  <ion-input
+                    type="email"
+                    formControlName="email"
+                  ></ion-input>
+                </ion-item>
+                <ion-item>
+                  <ion-label position="floating">Password</ion-label>
+                  <ion-input
+                    type="password"
+                    formControlName="password"
+                    minlength="3"
+                  ></ion-input>
+                </ion-item>
+                <ion-item>
+                  <ion-label position="floating">Height</ion-label>
+                  <ion-input
+                    type="number"
+                    formControlName="height"
+                    min="1"
+                    max="300"
+                  ></ion-input>
+                </ion-item>
+                <ion-item>
+                  <ion-label position="floating">Weight</ion-label>
+                  <ion-input
+                    type="number"
+                    formControlName="weight"
+                    min="1"
+                    max="300"
+                  ></ion-input>
+                </ion-item>
+              </ion-list>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+        <ion-buttons class="ion-align-items-center ion-justify-content-center">
+          <ion-button color="primary" [disabled]="!form.valid || !selectedUserId" (click)="onUpdateUser()">
+            <ion-icon name="checkmark-outline"></ion-icon> Ok
+          </ion-button>
+          <ion-button color="warning" (click)="updateSession()">
+            <ion-icon name="close-outline"></ion-icon> Cancel
+          </ion-button>
+        </ion-buttons>
+      </form> 
+    </ion-card-content>
+  </ion-card>
+
+</ion-content>
