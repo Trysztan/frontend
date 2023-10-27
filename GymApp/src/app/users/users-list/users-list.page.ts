@@ -1,14 +1,22 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { User } from 'src/app/global/models/user.model';
 import { UserServiceService } from '../../global/services/user-service.service';
-import { NgForm } from '@angular/forms';
+import { FormsModule, NgForm } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { IonicModule } from '@ionic/angular';
 
 @Component({
+  standalone: true,
   selector: 'app-users-list',
   templateUrl: './users-list.page.html',
   styleUrls: ['./users-list.page.scss'],
+  imports: [
+    CommonModule,
+    FormsModule,
+    IonicModule,
+  ],
 })
 export class UsersListPage implements OnInit,OnDestroy {
   users: User[]=[];

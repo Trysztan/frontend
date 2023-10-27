@@ -6,6 +6,14 @@ import { catchError, finalize, switchMap, throwError } from 'rxjs';
 import { User } from 'src/app/global/models/user.model';
 import { UserServiceService } from 'src/app/global/services/user-service.service';
 
+import { CommonModule } from '@angular/common';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+
+import { IonicModule } from '@ionic/angular';
+
+import { GlobalModule } from 'src/app/global/global.module';
+
+
 function base64toBlob(base64Data: string, contentType: string) {
   contentType = contentType || '';
   const sliceSize = 1024;
@@ -31,6 +39,14 @@ function base64toBlob(base64Data: string, contentType: string) {
   selector: 'app-regist',
   templateUrl: './regist.page.html',
   styleUrls: ['./regist.page.scss'],
+  imports: [
+    CommonModule,
+    FormsModule,
+    IonicModule,
+    ReactiveFormsModule,
+    GlobalModule,
+  ],
+  standalone: true,
 })
 export class RegistPage implements OnInit {
   users: User[]=[];

@@ -13,7 +13,7 @@
             <ion-spinner color="primary">Loading</ion-spinner>
           </div>
           <ion-item *ngFor="let user of users" (click)="userProfile(user.id)">
-            <ion-label>
+            <ion-label  class="profile-card">
                {{user.id}} - {{user.username}}
               </ion-label>
           </ion-item>

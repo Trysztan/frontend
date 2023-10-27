@@ -1,16 +1,24 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../global/services/auth.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { LoadingController } from '@ionic/angular';
-import { NgForm } from '@angular/forms';
+import { IonicModule, LoadingController } from '@ionic/angular';
+import { FormsModule, NgForm, ReactiveFormsModule } from '@angular/forms';
 import { User } from '../global/models/user.model';
+import { CommonModule } from '@angular/common';
 
 @Component({
+  standalone:true,
   selector: 'app-auth',
-  templateUrl: './auth.page.html',
-  styleUrls: ['./auth.page.scss'],
+  templateUrl: './auth.component.html',
+  styleUrls: ['./auth.component.scss'],
+  imports: [
+    CommonModule,
+    FormsModule,
+    IonicModule,
+    ReactiveFormsModule,
+  ],
 })
-export class AuthPage implements OnInit {
+export class AuthComponent implements OnInit {
   errormessage=""
   isLoading = false;
   constructor(
@@ -32,26 +40,26 @@ export class AuthPage implements OnInit {
     console.log(username, password);
     this.isLoading = true;
   
-    this.authService.login(username, password).subscribe(
-      (user: User) => {
-        console.log('Sikeres bejelentkezés:', user);
-        this.loadingCtrl
-          .create({ keyboardClose: true, message: 'Logging in...' })
+    this.authService.login(username, password)
+    .subscribe((loginSuccess) => {
+      if (loginSuccess) {
+        this.loadingCtrl.create({ keyboardClose: true, message: 'Logging in...' })
           .then(loadingEl => {
             loadingEl.present();
             setTimeout(() => {
               this.isLoading = false;
               loadingEl.dismiss();
+              form.resetForm();
               this.router.navigateByUrl('/users');
             }, 500);
           });
-      },
-      () => {
-        this.errormessage = "User not found:"
+      } else {
+        console.log('Sikertelen bejelentkezés:');
+        this.errormessage = "Login failed! User not found!"
         this.isLoading = false;
-        form.resetForm()
+        form.resetForm();
       }
-    );
+    });
   }
   
 

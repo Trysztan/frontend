@@ -1,8 +1,10 @@
+import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder,FormControl,FormGroup, NgForm, Validators } from '@angular/forms';
+import { FormBuilder,FormControl,FormGroup, FormsModule, NgForm, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { LoadingController } from '@ionic/angular';
+import { IonicModule, LoadingController } from '@ionic/angular';
 import { catchError, finalize, throwError } from 'rxjs';
+import { GlobalModule } from 'src/app/global/global.module';
 import { User } from 'src/app/global/models/user.model';
 import { UserServiceService } from 'src/app/global/services/user-service.service';
 
@@ -28,9 +30,17 @@ function base64toBlob(base64Data: string, contentType: string) {
 }
 
 @Component({
+  standalone: true,
   selector: 'app-user-profile',
   templateUrl: './user-profile.page.html',
   styleUrls: ['./user-profile.page.scss'],
+  imports: [
+    CommonModule,
+    FormsModule,
+    IonicModule,
+    ReactiveFormsModule,
+    GlobalModule,
+  ],
 })
 
 export class UserProfilePage implements OnInit {

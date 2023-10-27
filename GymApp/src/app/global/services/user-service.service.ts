@@ -1,5 +1,5 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, Injector } from '@angular/core';
 import { BehaviorSubject, Observable, map, tap } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { User } from '../models/user.model';
@@ -9,36 +9,19 @@ import { User } from '../models/user.model';
   providedIn: 'root'
 })
 export class UserServiceService {
-  [x: string]: any;
-  // private usersSubject = new BehaviorSubject<any[]>([]);
-  // users$ = this.usersSubject.asObservable();
   private _users = new BehaviorSubject<User[]>([]);
-  private deletedUser?: User | null = null;
-  private deletionTimer: any;
+
 
   get users() {
     return this._users.asObservable();
   }
 
-  constructor(private http: HttpClient) {
-    // this.getUsers().subscribe(users => {
-    //   this.usersSubject.next(users);
-    // });
+  constructor(
+    private http: HttpClient,
+    ) {
+
    }
 
-
-  //   getUsers(): Observable<any[]> {
-  //   return this.http
-  //     .get<any[]>(`${environment.baseUrl}/users`)
-  //     .pipe(
-  //       map(users => {
-  //         return users.map(user => ({
-  //           id: user.id,
-  //           username: user.username
-  //        }));
-  //      })
-  //      );
-  //  }
 
   fetchUser(){
     return this.http

@@ -1,7 +1,23 @@
 <ion-app>
   <ion-menu side="start" contentId="main-content">
     <ion-header>
-      <ion-toolbar>
+      <ion-toolbar *ngIf="loginedUser">
+        <ion-grid>
+          <ion-row align-items-center>
+            <ion-col size="auto">
+              <ion-avatar>
+                <ion-img [src]="profilePic"></ion-img>
+              </ion-avatar>
+            </ion-col>
+            <ion-col size="auto">
+              <ion-title>
+                {{loginedUser.username}}
+              </ion-title>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-toolbar>
+      <ion-toolbar *ngIf="!loginedUser">
         <ion-title>
           Menu
         </ion-title>
@@ -11,20 +27,26 @@
     <ion-content>
       <ion-list>
         <ion-menu-toggle>
-          <ion-item lines="none" routerLink="/users">
-            <ion-icon name="business" slot="start"></ion-icon>
-            <ion-label>Discover Places</ion-label>
+          <ion-menu-toggle  *ngIf="!loginedUser">
+            <ion-item  lines="none" (click)="onLogin()" button>
+              <ion-icon name="exit" slot="start"></ion-icon>
+              <ion-label>Login</ion-label>
+            </ion-item>
+          </ion-menu-toggle>
+          <ion-item lines="none" (click)="toUsersPage()" button>
+            <ion-icon name="people-outline" slot="start"></ion-icon>
+            <ion-label>Users</ion-label>
           </ion-item>
         </ion-menu-toggle>
         
         <ion-menu-toggle>
-          <ion-item lines="none" routerLink="/users">
-            <ion-icon name="checkbox-outline" slot="start"></ion-icon>
-            <ion-label>Your Bookings</ion-label>
+          <ion-item lines="none" (click)="toExercise()" button>
+            <ion-icon name="flame-outline" slot="start"></ion-icon>
+            <ion-label>Exercise List</ion-label>
           </ion-item>
         </ion-menu-toggle>
-        <ion-menu-toggle>
-          <ion-item lines="none" button>
+        <ion-menu-toggle  *ngIf="loginedUser">
+          <ion-item  lines="none" (click)="onLogout()" button>
             <ion-icon name="exit" slot="start"></ion-icon>
             <ion-label>Logout</ion-label>
           </ion-item>
