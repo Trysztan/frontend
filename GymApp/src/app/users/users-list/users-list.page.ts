@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { User } from 'src/app/global/models/user.model';
-import { UserServiceService } from '../../global/services/user-service.service';
+import { UserService } from '../../global/services/User/user.service';
 import { FormsModule, NgForm } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
@@ -29,7 +29,7 @@ export class UsersListPage implements OnInit,OnDestroy {
 
 
   constructor(
-    private userService: UserServiceService,
+    private userService: UserService,
     private router: Router,
   ) { }
 

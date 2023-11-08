@@ -1,17 +1,22 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>{{ name ? name : 'Create ExerciseList' }}</ion-title>
+    <ion-title *ngIf="creatingList===undefined">{{ name ? name : 'Create ExerciseList' }}</ion-title>
+    <ion-title *ngIf="creatingList">{{ creatingList.name }}</ion-title>
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="/exercises/list"></ion-back-button>
+        <app-leave (okButtonClicked)="onOKButtonClicked()"></app-leave>
     </ion-buttons>
-    <ion-buttons *ngIf="selectedCategory">
-      <ion-button (click)="switchUpdate()">{{selectedCategory}}</ion-button>
+    <ion-buttons *ngIf="selectedCategory || creatingList===undefined">
+      <ion-button (click)="switchUpdate()" >{{selectedCategory}}</ion-button>
       <ion-button (click)="switchSecondUpdate()" *ngIf="selectedSecondCategory">{{selectedSecondCategory}}</ion-button>
+    </ion-buttons>
+        <ion-buttons *ngIf="!selectedCategory && creatingList">
+      <ion-button (click)="switchUpdate()">{{creatingList.first_category}}</ion-button>
+      <ion-button (click)="switchSecondUpdate()" *ngIf="creatingList.second_category">{{creatingList.second_category}}</ion-button>
     </ion-buttons>
     <ion-buttons slot="end">
       <ion-button 
-      (click)="onCreateExercise()" 
-      [disabled]="!form.valid ">
+      (click)=" onCreateExerciseList()" 
+      [disabled]="!form.valid && creatingList?.exercises?.length===0">
         <ion-icon name="checkmark" slot="icon-only"></ion-icon>
       </ion-button>
     </ion-buttons>
@@ -22,7 +27,7 @@
   <form [formGroup]="form">
     <ion-grid>
       <ion-row>
-        <ion-col *ngIf="!isSelectedCategory" offset-sm="3">
+        <ion-col *ngIf="!isSelectedCategory && creatingList===undefined" offset-sm="3">
           <app-category-picker
           [categories]="categories"
           [buttontext]="buttontext"
@@ -39,7 +44,7 @@
           </app-category-picker>
         </ion-col>
       </ion-row>
-      <ion-row>
+      <ion-row *ngIf="creatingList===undefined || creatingList?.name===''">
         <ion-col size-sm="6" offset-sm="3">
           <ion-item>
             <ion-label position="floating">Name</ion-label>
@@ -53,14 +58,23 @@
           </ion-item>
         </ion-col>
       </ion-row>
-      <ion-row *ngIf="selectedCategory && (isSelectedSecondCategory || isCardio) && exercises?.length">
+      <ion-row *ngIf="(selectedCategory || creatingList?.first_category) && (selectedSecondCategory || isCardio || creatingList?.second_category) && exercises?.length">
         <ion-col size-sm="6" offset-sm="3">
-        <ion-item>
-          <app-exercise-item></app-exercise-item>
-        </ion-item>
+          <ion-card>
+            <ion-card-content>
+              <ion-list>
+                <ion-item *ngFor="let exercise of exercises">
+                  <app-exercise-item
+                  [selectedList]="creatingList"
+                  [exercise] = "exercise"
+                  ></app-exercise-item>
+                </ion-item>
+              </ion-list>
+            </ion-card-content>
+          </ion-card>
         </ion-col>
       </ion-row>
-      <ion-row *ngIf="selectedCategory && (isSelectedSecondCategory || isCardio)">
+      <ion-row *ngIf="selectedCategory && (isSelectedSecondCategory || isCardio) || creatingList">
         <ion-col size-sm="1" offset-sm="5.5">
         <ion-item>
           <ion-button style="background-color: none;"(click)="addNewExercise()">

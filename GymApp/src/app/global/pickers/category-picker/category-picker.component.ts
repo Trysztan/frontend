@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { PickerController } from '@ionic/angular';
-import { ExerciseService } from '../../services/exercise.service';
+import { ExerciseService } from '../../services/Exercise/exercise.service';
 
 @Component({
   selector: 'app-category-picker',

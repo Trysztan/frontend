@@ -12,4 +12,9 @@ export const exercise_list_routes: Routes = [
     loadComponent: () => 
     import('./create-exercises-list/create-exercises-list.component').then((m) => m.CreateExercisesListComponent)
   },
+  {
+    path: 'detail',
+    loadChildren: () => 
+    import('./list-detail/list-detail.route').then((m) => m.exercise_list_detail_routes)
+  },
 ];

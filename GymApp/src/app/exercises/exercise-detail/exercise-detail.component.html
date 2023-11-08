@@ -1,0 +1,110 @@
+
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons *ngIf="selectedExercise && !isNameUpdate">
+      <ion-button (click)="isUpdateExerciseName()">{{selectedExercise.name}}</ion-button>
+    </ion-buttons>
+    <ion-buttons *ngIf="selectedExercise && isNameUpdate">
+       <ion-input
+        type="text"
+        [(ngModel)]="name"
+        required
+        minlength="3"
+        ></ion-input>
+        <ion-button (click)="updateExerciseName()">Change</ion-button>
+    </ion-buttons>
+  <ion-buttons *ngIf="selectedExercise &&  !isSwitchFirstCategory">
+      <ion-button (click)="switchFirstCategory()" >{{selectedExercise.first_category}}</ion-button>
+      <ion-button *ngIf="selectedExercise.first_category && !isSwitchSecondCategory" (click)="switchSecondCategory()">{{selectedExercise.second_category}}</ion-button>
+    </ion-buttons>
+    <ion-buttons *ngIf="selectedExercise && (isSwitchFirstCategory || isSwitchSecondCategory)">
+      <app-category-picker
+      *ngIf="categories && isSwitchFirstCategory"
+      [categories]="categories"
+      [buttontext]="buttontext"
+      (selectedCategory)="onSelectedCategory($event)"
+      >
+      </app-category-picker>
+      <app-category-picker
+      *ngIf="secondcategories && !isSwitchFirstCategory && isSwitchSecondCategory"
+      [categories]="secondcategories"
+      [buttontext]="buttontext2"
+      (selectedCategory)="onSelectedSecondCategory($event)"
+      >
+      </app-category-picker>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+
+<ion-content>
+  <ion-fab slot="fixed" vertical="top" horizontal="end" [edge]="true">
+    <ion-fab-button size="small" color="danger">
+      <ion-icon name="chevron-down-circle"></ion-icon>
+    </ion-fab-button>
+    <ion-fab-list side="bottom">
+      <ion-fab-button *ngIf="form.valid" color="success" (click)="saveExercise()">
+        <ion-icon name="checkmark-circle-outline"></ion-icon>      
+      </ion-fab-button>
+      <ion-fab-button color="danger" (click)="deleteExercise()">
+        <ion-icon name="trash-bin-outline"></ion-icon>      
+      </ion-fab-button>
+    </ion-fab-list>
+  </ion-fab>
+  <form [formGroup]="form">
+    <ion-grid>
+      <ion-row *ngIf="isCardio">
+        <ion-col size-sm="6" offset-sm="3">
+          <ion-item>
+            <ion-label position="floating">Distance(km)</ion-label>
+            <ion-input
+              type="number"
+              minlength="3"
+
+              formControlName="distance"
+              ></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row *ngIf="!isCardio">
+        <ion-col size-sm="6" offset-sm="3">
+          <ion-item >
+            <ion-label position="floating">Weight(kg)</ion-label>
+            <ion-input
+              type="number"
+              min="1"
+              max="300"
+              formControlName="weight"            
+            ></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size-sm="3" offset-sm="3">
+          <ion-item >
+            <ion-label position="floating">Set</ion-label>
+            <ion-input
+              type="number"
+              required
+              min="1"
+              max="10"
+              formControlName="set"            
+            ></ion-input>
+          </ion-item>
+        </ion-col>
+        <ion-col size-sm="3">
+          <ion-item >
+            <ion-label position="floating">Rep</ion-label>
+            <ion-input
+              type="number"
+              required
+              min="1"
+              max="100"
+              formControlName="rep"            
+            ></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </form>
+</ion-content>

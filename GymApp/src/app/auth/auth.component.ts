@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthService } from '../global/services/auth.service';
+import { AuthService } from '../global/services/User/auth.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { IonicModule, LoadingController } from '@ionic/angular';
 import { FormsModule, NgForm, ReactiveFormsModule } from '@angular/forms';

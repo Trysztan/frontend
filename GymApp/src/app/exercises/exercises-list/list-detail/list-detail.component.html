@@ -1,0 +1,74 @@
+
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <app-save-list-session [selectedList]="selectedList" (okButtonClicked)="onOKButtonClicked()"></app-save-list-session>
+  </ion-buttons>
+    <ion-buttons *ngIf="selectedList && !isNameUpdate">
+      <ion-button (click)="isUpdateListName()">{{selectedList.name}}</ion-button>
+    </ion-buttons>
+    <ion-buttons *ngIf="selectedList && isNameUpdate">
+       <ion-input
+        type="text"
+        [(ngModel)]="name"
+        required
+        minlength="3"
+        ></ion-input>
+        <ion-button (click)="updateListName()">Change</ion-button>
+    </ion-buttons>
+  <ion-buttons *ngIf="selectedList &&  !isSwitchFirstCategory">
+      <ion-button (click)="switchFirstCategory()" >{{selectedList.first_category}}</ion-button>
+      <ion-button *ngIf="selectedList.first_category && !isSwitchSecondCategory" (click)="switchSecondCategory()">{{selectedList.second_category}}</ion-button>
+    </ion-buttons>
+    <ion-buttons *ngIf="selectedList && (isSwitchFirstCategory || isSwitchSecondCategory)">
+      <app-category-picker
+      *ngIf="categories && isSwitchFirstCategory"
+      [categories]="categories"
+      [buttontext]="buttontext"
+      (selectedCategory)="onSelectedCategory($event)"
+      >
+      </app-category-picker>
+      <app-category-picker
+      *ngIf="secondcategories && !isSwitchFirstCategory && isSwitchSecondCategory"
+      [categories]="secondcategories"
+      [buttontext]="buttontext2"
+      (selectedCategory)="onSelectedSecondCategory($event)"
+      >
+      </app-category-picker>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content *ngIf="selectedList && selectedList.exercises">
+  <ion-fab slot="fixed" vertical="top" horizontal="end" [edge]="true">
+    <ion-fab-button size="small" color="danger">
+      <ion-icon name="chevron-down-circle"></ion-icon>
+    </ion-fab-button>
+    <ion-fab-list side="bottom">
+      <ion-fab-button color="success" (click)="saveExerciseList()">
+        <ion-icon name="checkmark-circle-outline"></ion-icon>      
+      </ion-fab-button>
+      <ion-fab-button color="primary" 
+      (click)="addNewExercise()">
+        <ion-icon name="add-circle-outline"></ion-icon>      
+      </ion-fab-button>
+      <ion-fab-button color="danger" (click)="deletExerciseList()">
+        <ion-icon name="trash-bin-outline"></ion-icon>      
+      </ion-fab-button>
+    </ion-fab-list>
+  </ion-fab>
+  <div *ngFor="let exercise of selectedList.exercises">
+    <ion-card color="warning">
+      <ion-card-header>
+        <ion-card-subtitle>{{exercise.first_category}} {{exercise.second_category}}</ion-card-subtitle>
+        <ion-card-title class="ion-text-bold">{{exercise.name}}</ion-card-title>
+      </ion-card-header>
+      <ion-card-content *ngIf="exercise?.weight">{{exercise?.weight}} kg - set: {{exercise?.sets}} X rep: {{exercise?.repetitions}}</ion-card-content>
+      <ion-card-content *ngIf="exercise?.distance">{{exercise?.distance}} km - set: {{exercise?.sets}} X rep: {{exercise?.repetitions}}</ion-card-content>
+      <ion-buttons>
+        <ion-button (click)="exerciseUpdate(exercise)"fill="outline" color="primary"><ion-icon name="pencil"></ion-icon> Update</ion-button>
+        <ion-button (click)="exerciseRemove(exercise)" fill="outline" color="danger"><ion-icon name="close-outline"></ion-icon> Delete</ion-button>
+      </ion-buttons>
+    </ion-card>
+  </div>
+</ion-content>

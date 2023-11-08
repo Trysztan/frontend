@@ -2,13 +2,13 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable, Injector } from '@angular/core';
 import { BehaviorSubject, Observable, map, tap } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { User } from '../models/user.model';
+import { User } from '../../models/user.model';
 
 
 @Injectable({
   providedIn: 'root'
 })
-export class UserServiceService {
+export class UserService {
   private _users = new BehaviorSubject<User[]>([]);
 
 
@@ -55,25 +55,17 @@ export class UserServiceService {
     return this.http.get(`${environment.baseUrl}/users/${userId}`);
   }
 
-
   updateUser(newuser: any,selectedUser: any,file: File) {
     const formData = new FormData();
     formData.append('file', file);
     formData.append('id', selectedUser.id);
     
     formData.append('username', newuser.username ? newuser.username : selectedUser.username);
-  
-    formData.append('email', newuser.email ? newuser.email : selectedUser.email);
-  
+    formData.append('email', newuser.email ? newuser.email : selectedUser.email); 
     formData.append('password', newuser.password ? newuser.password : selectedUser.password);
-  
     formData.append('height', newuser.height ? newuser.height.toString() : selectedUser.height.toString());
-  
     formData.append('weight', newuser.weight ? newuser.weight.toString() : selectedUser.weight.toString());
-
     formData.append('imagePath', selectedUser.imagePath);
-
-  
 
   return this.http.put(`${environment.baseUrl}/users`,formData)
   .pipe(

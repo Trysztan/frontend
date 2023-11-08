@@ -1,15 +1,17 @@
   import { CommonModule } from '@angular/common';
   import { Component, OnInit } from '@angular/core';
   import { FormArray, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-  import { Router } from '@angular/router';
+  import { ActivatedRoute, Router } from '@angular/router';
   import { IonicModule, LoadingController } from '@ionic/angular';
-  import { catchError, finalize, throwError } from 'rxjs';
+  import { catchError, finalize, of, throwError } from 'rxjs';
   import { GlobalModule } from 'src/app/global/global.module';
   import { Exercise } from 'src/app/global/models/exercise.model';
   import { User } from 'src/app/global/models/user.model';
-  import { AuthService } from 'src/app/global/services/auth.service';
-  import { ExerciseService } from 'src/app/global/services/exercise.service';
+  import { AuthService } from 'src/app/global/services/User/auth.service';
+  import { ExerciseService } from 'src/app/global/services/Exercise/exercise.service';
 import { ExerciseItemComponent } from '../exercise-item/exercise-item.component';
+import { ExerciseListService } from 'src/app/global/services/Exercise/exercise-list.service';
+import { ExerciseList } from 'src/app/global/models/exercise-list.model';
   
   @Component({
     standalone: true,
@@ -37,14 +39,16 @@ import { ExerciseItemComponent } from '../exercise-item/exercise-item.component'
     form!: FormGroup<any>;
     isCardio: boolean = false;
     loginedUser?: User ;
-    exercises?: Array<any>
+    exercises?: Array<Exercise>=[];
     name?: string;
+    creatingList?: ExerciseList
 
   
     constructor(
       private authService: AuthService,
       private exerciseService: ExerciseService,
       private router: Router,
+      private exerciseListService: ExerciseListService,      
       private loadingCtrl: LoadingController
       ) { }
   
@@ -61,12 +65,13 @@ import { ExerciseItemComponent } from '../exercise-item/exercise-item.component'
         {
           if(user)
           this.loginedUser = user;
-          console.log(this.loginedUser)
         })
   
       this.exerciseService.getCategories().subscribe(cat =>{
         this.categories = cat
       })
+      this.exercises = this.exerciseListService.getExercises()
+      this.creatingList = this.exerciseListService.getCreatingList()
     }
   
     onSelectedCategory(category: string) {
@@ -99,35 +104,49 @@ import { ExerciseItemComponent } from '../exercise-item/exercise-item.component'
     }
   
     addNewExercise(){
-      this.router.navigate(['/exercise/create'], { queryParams: { exercises: JSON.stringify(this.exercises) } });
+      if(this.loginedUser?.id){
+        const id = Math.floor(Math.random() * (100000000 - 1 + 1)) + 1;
+
+      var list = new ExerciseList(
+        this.creatingList?.id ?  this.creatingList?.id:id,
+        this.creatingList?.name || this.name || "" ,
+        this.creatingList?.first_category || this.selectedCategory || "",
+        this.creatingList?.second_category || this.selectedSecondCategory || "",
+        this.loginedUser,
+        this.exercises ? this.exercises : [],
+        )
+        console.log(list)
+        this.exerciseListService.createListSession(list)
+      }
+      this.router.navigate(['/exercises/create']);
     }
-    
-    onCreateExercise(){
+
+    onCreateExerciseList(){
       this.isCardio=false;
-      if (!this.form?.valid) {
+      if (!this.form?.valid && !this.creatingList && !this.loginedUser) {
         return;
       }
-      
-      const exercise = new Exercise(
-        this.form?.value.name,
-        this.selectedCategory===undefined ? "": this.selectedCategory,
-        this.form?.value.pr,
-        this.loginedUser ? this.loginedUser.id : 58,
-        this.selectedSecondCategory===undefined ? "": this.selectedSecondCategory,
-        this.form?.value.rep,
-        this.form?.value.set,
-        this.form?.value.weight,
-        this.form?.value.distance,
+       let exerciseList : any;
+      const id = Math.floor(Math.random() * (100000000 - 1 + 1)) + 1;
+      if(this.loginedUser){
+       exerciseList = new ExerciseList(
+        this.creatingList?.id ? this.creatingList?.id : id,
+        this.creatingList?.name || this.name || "",
+        this.creatingList?.first_category || this.selectedCategory || "",
+        this.creatingList?.second_category || this.selectedSecondCategory || "",
+        this.loginedUser,
+        this.exercises ? this.exercises: [],
       );
-        console.log(exercise)
+      console.log(exerciseList)
+      }
       this.loadingCtrl
         .create({
-          message: 'Creating exercise...'
+          message: 'Creating Exercise List...'
         })
         .then(loadingEl => {
           loadingEl.present();
-          this.exerciseService
-            .createExercise(exercise)
+          this.exerciseListService
+            .saveExerciseList(exerciseList)
             .pipe(
               catchError(error => {
                 console.error('Hiba történt:', error);
@@ -138,15 +157,27 @@ import { ExerciseItemComponent } from '../exercise-item/exercise-item.component'
               })
             )
             .subscribe(() => {
-              this.selectedCategory= undefined;
-              this.selectedSecondCategory= undefined;
-              this.form?.reset();
-              this.form?.disable();
-              this.router.navigate(['/exercise/list/create']);
+              this.createListReset()
+              this.router.navigate(['/exercises/list']);
             });
         });
     }
+
+    createListReset(){
+      this.form?.reset();
+      this.form?.disable();
+      this.exerciseListService.deleteSession();
+      this.exercises=[];
+      this.creatingList= undefined;
+      this.selectedCategory=undefined;
+      this.selectedSecondCategory = undefined;
+      this.isSelectedCategory = false;
+      this.isSelectedSecondCategory = false;
+    }
     
-    
+    onOKButtonClicked() {
+      this.exercises=[];
+      this.creatingList=undefined;
+    }
   }
   

@@ -1,3 +1,12 @@
-<p>
-  exercise-item works!
-</p>
+  <ion-item-sliding *ngIf="exercise && selectedList">
+    <ion-item>
+      <ion-label *ngIf="exercise?.weight">{{exercise.name}} - {{exercise.weight}} kg - set: {{exercise.sets}} X rep: {{exercise.repetitions}}</ion-label>
+      <ion-label *ngIf="exercise?.distance">{{exercise.name}} - {{exercise.distance}} - set: {{exercise.sets}} X rep: {{exercise.repetitions}}</ion-label>
+        </ion-item>
+
+    <ion-item-options>
+      <ion-item-option (click)="exerciseUpdate(exercise,selectedList)">Update</ion-item-option>
+      <ion-item-option (click)="exerciseRemove(exercise,selectedList)" color="danger">Delete</ion-item-option>
+    </ion-item-options>
+  </ion-item-sliding>
+  

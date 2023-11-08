@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { LoadingController } from '@ionic/angular';
 import { catchError, finalize, switchMap, throwError } from 'rxjs';
 import { User } from 'src/app/global/models/user.model';
-import { UserServiceService } from 'src/app/global/services/user-service.service';
+import { UserService } from 'src/app/global/services/User/user.service';
 
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -60,7 +60,7 @@ export class RegistPage implements OnInit {
   isLogin?: boolean;
 
   constructor(
-    private userService: UserServiceService,
+    private userService: UserService,
     private router: Router,
     private route: ActivatedRoute,
     private loadingCtrl: LoadingController

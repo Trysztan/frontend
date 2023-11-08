@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Exercise } from '../models/exercise.model';
+import { Exercise } from '../../models/exercise.model';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
@@ -24,7 +24,22 @@ export class ExerciseService {
 
   createExercise(exercise: Exercise){
     return this.http
-    .post(`${environment.baseUrl}/exercise/save/${exercise.creator_id}`, exercise)
+    .post(`${environment.baseUrl}/exercise/save/${exercise.creator.id}`, exercise)
+  }
+
+  getExercise(exerciseId: number){
+    return this.http
+    .get<Exercise>(`${environment.baseUrl}/exercise/getexercise/${exerciseId}`)
+  }
+
+  updateExercise(exercise: Exercise){
+    return this.http
+    .put(`${environment.baseUrl}/exercise/update`, exercise)
+  }
+
+  deleteExercise(exerciseId: number){
+    return this.http
+    .delete(`${environment.baseUrl}/exercise/delete/${exerciseId}`)
   }
   
 }

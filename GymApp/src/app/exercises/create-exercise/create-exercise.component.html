@@ -9,9 +9,16 @@
       <ion-button (click)="switchSecondUpdate()" *ngIf="selectedSecondCategory">{{selectedSecondCategory}}</ion-button>
     </ion-buttons>
     <ion-buttons slot="end">
-      <ion-button 
+      <ion-button
+      *ngIf="!selectedExerciseList"
       (click)="onCreateExercise()" 
-      [disabled]="!form.valid ">
+      [disabled]="!form.valid">
+        <ion-icon name="checkmark" slot="icon-only"></ion-icon>
+      </ion-button>
+      <ion-button
+      *ngIf="selectedExerciseList"
+      (click)="onCreateExerciseToList()" 
+      [disabled]="!form.valid">
         <ion-icon name="checkmark" slot="icon-only"></ion-icon>
       </ion-button>
     </ion-buttons>
@@ -85,7 +92,6 @@
             <ion-label position="floating">Weight(kg)</ion-label>
             <ion-input
               type="number"
-              required
               min="1"
               max="300"
               formControlName="weight"            

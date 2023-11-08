@@ -6,7 +6,7 @@ import { IonicModule, LoadingController } from '@ionic/angular';
 import { catchError, finalize, throwError } from 'rxjs';
 import { GlobalModule } from 'src/app/global/global.module';
 import { User } from 'src/app/global/models/user.model';
-import { UserServiceService } from 'src/app/global/services/user-service.service';
+import { UserService } from 'src/app/global/services/User/user.service';
 
 function base64toBlob(base64Data: string, contentType: string) {
   contentType = contentType || '';
@@ -56,7 +56,7 @@ export class UserProfilePage implements OnInit {
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    private userService: UserServiceService,
+    private userService: UserService,
     private formBuilder: FormBuilder,
     private loadingCtrl: LoadingController
   ) { }

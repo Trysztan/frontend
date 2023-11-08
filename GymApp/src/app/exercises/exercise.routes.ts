@@ -8,8 +8,13 @@ export const exercises_routes: Routes = [
      children: [
       {
         path: 'create',
-       loadComponent: () => 
-        import('./create-exercise/create-exercise.component').then((m) => m.CreateExerciseComponent)
+       loadChildren: () => 
+        import('./create-exercise/create-exercise.route').then((m) => m.create_exercise_routes)
+      },
+      {
+        path: 'detail',
+        loadChildren: () => 
+        import('./exercise-detail/exercise-detail.route').then((m) => m.exercise_detail_routes)
       },
       {
         path: 'list',

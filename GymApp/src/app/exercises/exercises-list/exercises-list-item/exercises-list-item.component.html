@@ -9,6 +9,32 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-  valami
+<ion-content *ngIf="exerciseListFetch">
+  <div *ngIf="isLoading" class="ion-text-center">
+    <ion-spinner color="primary">Loading</ion-spinner>
+  </div>
+  <div *ngFor="let exerciseL of exerciseListFetch ">
+    <ion-accordion-group #exerciseList>
+      <ion-accordion [value]="exerciseL.id">
+        <ion-item slot="header" color="light">
+          <ion-label>{{exerciseL.name}}  <ion-button style="cursor: pointer;" (click)="toListDetail(exerciseL)">Modify</ion-button> 
+          </ion-label>
+        </ion-item>
+        <div class="ion-padding" slot="content" *ngFor="let exercise of exerciseL.exercises">
+          <app-exercise-item
+          *ngIf="exerciseL"
+          [selectedList]="exerciseL"
+          [exercise] = "exercise"
+          ></app-exercise-item>       
+        </div>
+      </ion-accordion>
+    </ion-accordion-group>
+      </div>
+</ion-content>
+
+<ion-content *ngIf="!exerciseListFetch?.length">
+  <div *ngIf="isLoading" class="ion-text-center">
+    <ion-spinner color="primary">Loading</ion-spinner>
+  </div>
+  <div class="ion-text-center">Create new exercise list</div>
 </ion-content>

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
 import { User } from 'src/app/global/models/user.model';
-import { AuthService } from 'src/app/global/services/auth.service';
+import { AuthService } from 'src/app/global/services/User/auth.service';
 import { ExercisesListItemComponent } from './exercises-list-item/exercises-list-item.component';
 import { Router } from '@angular/router';
 

@@ -4,9 +4,9 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { HttpClientModule } from '@angular/common/http';
-import { AuthService } from './global/services/auth.service';
+import { AuthService } from './global/services/User/auth.service';
 import { User } from './global/models/user.model';
-import { UserServiceService } from './global/services/user-service.service';
+import { UserService } from './global/services/User/user.service';
 import { Router } from '@angular/router';
 
 @Component({
@@ -30,7 +30,7 @@ export class AppComponent implements OnInit{
 
   constructor(
     private authService: AuthService,
-    private userService: UserServiceService,
+    private userService: UserService,
     private router: Router
   ){}
 
